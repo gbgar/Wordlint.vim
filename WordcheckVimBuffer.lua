@@ -2,6 +2,7 @@
 -- 
 -- get default options and buffer name
 wcoptions = vim.eval('g:wordcheck_opts')
+b = vim.buffer()
 file = b.fname
 
 -- return bufnr with vim.buffer().number returned as float,
@@ -22,6 +23,8 @@ wordpairs = io.popen("wordcheck -s vim " .. wcoptions .. " -f " .. file)
 -- list of matched words for use in setloclist().
 for line in wordpairs:lines() do
         pairentry = vim.dict()
+-- only add new dict if not a blank line
+    if line ~= "" then
         -- pattern matching info:
         -- http://www.lua.org/manual/5.2/manual.html#6.4.1
         -- http://pgl.yoyo.org/luai/i/string.gmatch
@@ -31,5 +34,6 @@ for line in wordpairs:lines() do
         pairentry.filename = file
         pairentry.bufnr = bnum
         wordpairlist:add(pairentry)
+    end
 end
 wordpairs:close()
