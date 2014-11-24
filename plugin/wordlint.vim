@@ -28,10 +28,10 @@ function! WordlintBufferCheck()
 " lint entire buffer, set loc. list[, and highlight].
         call setloclist(0, [])
         let g:dictlist = []
-        " Lua cannot utilize pipes in the standard library
-        " therefore, wordlint must receive a file name.
-        " In case no file name is present, pass entire
-        " file to  lua script that processes selection
+        " Lua cannot utilize pipes in the standard library therefore, wordlint
+        " must receive a file name.  In case no file name is present or the
+        " bufer has changed, pass entire file to  lua script that processes
+        " selection
         if filereadable(expand('%:p')) && b:changedtick == 0
         call wordlint#util#WordlintExecuteLuaFile("WordlintVimBuffer.lua",0)
         else
