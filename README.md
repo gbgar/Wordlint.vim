@@ -31,7 +31,7 @@ g:wordlint_opts
 
             `:let g:wordlint_opts = '-t line -d 20'`
 
-	will cause :WordcheckCheckBuffer to perform a line-based lint and
+	will cause :WordlintCheckBuffer to perform a line-based lint and
 	return any matching words that are within 20 lines of one-another.
 
 g:wordlint_highlight
