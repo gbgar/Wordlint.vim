@@ -1,14 +1,17 @@
-*wordlint.txt*		For Vim version 7.4		Last change: 2014 November 23
+*wordlint.txt*		For Vim version 7.4		Last change: 2014 December 01
 
-Wordlint.vim provides two ex commands as an interface with the `wordlint`
-redundancy checking program.
+Wordlint.vim provides a compiler based on the `wordlint` redundancy checking
+program, intended for use in prose writing. After loading, the `:Wordlint`
+command becomes available to pass a set of user-provided default options to
+`:make`.
 
 ============================================================================
 0. Contents     									    				*wordlint-contents*
 
 1. Installation 					|wordlint-installation|
-2. Options							  |wordlint-options|
+2. Usage        					|wordlint-usage|
 3. Commands 						  |wordlint-commands|
+4. Options							  |wordlint-options|
 
 ============================================================================
 1. Installation     		 											*wordlint-installation*
@@ -17,79 +20,71 @@ Instllation of this plugin is precluded by the installation of the external
 tool ``wordlint``, which may be found at https://github.com/gbgar/Wordlint
 or may be installed through Hackage, via cabal: 
 >
-	cabal insall wordlint
-
+  	cabal insall wordlint
+<
 Afterward, the vim interface may be installed.
 
 - Using a plugin manager
 >
-		NeoBundle 'gbgar/wordlint.vim', 
-
+		NeoBundle 'gbgar/wordlint.vim'
+<
 - Manually
 
 	Not recommended. Copy the repo's directory structure into ~/.vim/ folder.
 
 ============================================================================
-2. Options    											  *wordlint-options*
+2. Usage            		 											*wordlint-usage*
+
+Basic usage requires the user to set wordlint as the compiler:
+>
+	:compiler wordlint
+<
+Afterward, the `:make` command may be used, with additional arguments if desired.
+
+All linting options and the `--all` output flag are acceptable arguments.  See
+`wordlint --help`, the wordlint man page, or the wordlint README for a full
+list of available options. 
+
+NOTE: As the `wordlint` program is in an early stage, options are subject
+			to change from time to time.
+
+============================================================================
+2.1 Set filetype autocommand
+
+Optionally, this compiler may be associated with a filetype in your .vimrc:
+>
+	autocmd FileType pandoc,markdown compiler wordlint
+<
+============================================================================
+3. Commands   													  	  *wordlint-commands*
+
+Wordlint.vim provides one convenience command for interfacing with wordlint. 
+
+																						  *:Wordlint* 
+:Wordlint
+				Wrapper around |:make| with user-defined defaults,
+				set via `g:wordlint_opts`.
+
+============================================================================
+4. Options    											  *wordlint-options*
 
 																			*g:wordlint_opts*
 g:wordlint_opts
 
 	Default is ' '. Set this option to pass custom command line arguments to
-	wordlint.  All linting options and the `-a` output argument are acceptable
-	input. See `wordlint --help`, the wordlint man page, or the wordlint
-  README for a full list of available options. For example:
->
-					:let g:wordlint_opts = '-t line -d 20 --nopunct'
-<
-	will cause |:WordlintCheckBuffer| to perform a line-based lint, filtering
-  punctuation from the list of potential matches, and return any matching 
-	words that are within 20 lines of one-another.
+	wordlint. Argument rules are the same as those listed in |wordlint-usage|.
 
-																			*g:wordlint_hightlight*
-g:wordlint_highlight
-
-	If non-zero, highlight matches.  Default is '1'
-
-																			*g:wordlint_custom_hightlight_group*
-g:wordlint_custom_highlight_group
-
-
-  Set the name of a custom syntax group for highlighting matches.
 	For example:
 >
-				:highlight MyWordlintGroup ctermbg=yellow ctermfg=black
-				:let g:wordlint_custom_highlight_group = "MyWordLintGroup"
+					:let g:wordlint_opts = '-t line -d 20 --nopunct'
+					:Wordlint
 <
-	Default is 'Error'
-
-NOTE: Remove highlighting with 
+	is equivalent to
 >
-				:call clearmatches()
-				:nnoremap <Leader>cm <Silent>:call clearmatches()
+				 :make -t line -d 20
 <
-			Future improvements will revolve around some kind of real-time
-			highlighting/movements between matches. Or, perhaps there already
-		  exists a plugin that I have yet to find which does this for loclist.
-
-============================================================================
-3. Commands   													  	  *wordlint-commands*
-
-Wordlint.vim provides two commands for interfacing with wordlint, one
-targeting the entire buffer, and the other a selection. Both set the
-|location-list| for the buffer, and both optionally set a custom highlight
-for any matched words.
-
-																						  *:WordlintCheckBuffer* 
-:WordlintCheckBuffer									
-
-				Runs `wordlint . |g:wordlint_opts|` on the current buffer, sets the
-				|location-list|, and optionally highlights all matches.
-
-																							*:WordlintCheckSelected*
-:[range]WordlintCheckSelected
-		
-				The same as |:WordlintCheckBuffer|, but with an optional range.
-				Default range is set for the entire buffer.
+	and both will run `wordlint`, performing a line-based check, and returning
+	any matching words that are greater than five characters (default) long and
+	found within 20 lines of one-another.
 
 vim:tw=78:noet:ts=2:ft=help:norl:
