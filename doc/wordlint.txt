@@ -1,4 +1,4 @@
-*wordlint.txt*		For Vim version 7.4		Last change: 2014 December 01
+*wordlint.txt*		For Vim version 7.4		Last change: 2015 February 20
 
 Wordlint.vim provides a compiler based on the `wordlint` redundancy checking
 program, intended for use in prose writing. After loading, the `:Wordlint`
@@ -41,11 +41,12 @@ Basic usage requires the user to set wordlint as the compiler:
 <
 Afterward, the `:make` command may be used, with additional arguments if desired.
 
-All linting options and the `--all` output flag are acceptable arguments.  See
-`wordlint --help`, the wordlint man page, or the wordlint README for a full
-list of available options. 
+The `--matchlength` flag; up to three linter options (`-w`, `-l`, and/or `-p`)
+or the `--all` output flag; and any combination of filter functions are
+acceptable arguments. See `wordlint` `--help`, the wordlint man page, or the
+wordlint README for a full list of available options. 
 
-NOTE: As the `wordlint` program is in an early stage, options are subject
+NOTE: The `wordlint` program is in an early stage and options are subject
 			to change from time to time.
 
 ============================================================================
@@ -76,15 +77,16 @@ g:wordlint_opts
 
 	For example:
 >
-					:let g:wordlint_opts = '-t line -d 20 --nopunct'
+					:let g:wordlint_opts = '--lines 20 --nopunct'
 					:Wordlint
 <
 	is equivalent to
 >
-				 :make -t line -d 20
+				 :make --lines 20 --nopunct
 <
-	and both will run `wordlint`, performing a line-based check, and returning
-	any matching words that are greater than five characters (default) long and
-	found within 20 lines of one-another.
+
+	Both run `wordlint`, performing a line-based check, and returning any
+	matching words that are greater than five characters (default) long and 
+  found within 20 lines of one-another.
 
 vim:tw=78:noet:ts=2:ft=help:norl:
